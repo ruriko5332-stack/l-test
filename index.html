@@ -1,16 +1,56 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>有休申請</title>
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  </head>
-  <body>
-    有休申請ミニアプリ
-    <script>
-      liff.init({
-        liffId: "2010213176-JCC03rEK"
-      });
-    </script>
-  </body>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>有休申請</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- LIFF SDK -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+
+<body>
+  <h2>有休申請</h2>
+
+  <label>社員番号</label><br>
+  <input type="text" id="empNo" placeholder="1234"><br><br>
+
+  <button onclick="send()">送信</button>
+
+  <script>
+    // ★ あなたの LIFF ID
+    const LIFF_ID = "2010213176-JCC03rEK";
+
+    // ★ Power Automate の HTTP POST URL（あとで差し替え）
+    const FLOW_URL = "ここにHTTP_POST_URLを入れる";
+
+    async function send() {
+      try {
+        await liff.init({ liffId: LIFF_ID });
+
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        const profile = await liff.getProfile();
+        const empNo = document.getElementById("empNo").value;
+
+        await fetch(FLOW_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            empNo: empNo,
+            userId: profile.userId
+          })
+        });
+
+        alert("送信しました");
+      } catch (e) {
+        alert("エラー");
+      }
+    }
+  </script>
+</body>
 </html>
+``
