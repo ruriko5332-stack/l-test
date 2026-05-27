@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>有休申請</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- LIFF SDK -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 
@@ -18,39 +16,21 @@
   <button onclick="send()">送信</button>
 
   <script>
-    // ★ あなたの LIFF ID
     const LIFF_ID = "2010213176-JCC03rEK";
 
-    // ★ Power Automate の HTTP POST URL（あとで差し替え）
-    const FLOW_URL = "ここにHTTP_POST_URLを入れる";
-
     async function send() {
-      try {
-        await liff.init({ liffId: LIFF_ID });
+      await liff.init({ liffId: LIFF_ID });
 
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
-        }
-
-        const profile = await liff.getProfile();
-        const empNo = document.getElementById("empNo").value;
-
-        await fetch(FLOW_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            empNo: empNo,
-            userId: profile.userId
-          })
-        });
-
-        alert("送信しました");
-      } catch (e) {
-        alert("エラー");
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
       }
+
+      const profile = await liff.getProfile();
+      const empNo = document.getElementById("empNo").value;
+
+      alert("userId=" + profile.userId + " / empNo=" + empNo);
     }
   </script>
 </body>
 </html>
-``
